@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <section v-if="isLoaded" class="left-hand">
-      <img :src="movieItems[selectedItemIndex]['imageURL']">
+      <character-image
+        :imageURL="movieItems[selectedItemIndex]['imageURL']"
+        :trianglePath="movieItems[selectedItemIndex]['trianglePath']"
+        :tracePaths="movieItems[selectedItemIndex]['tracePaths']"/>
     </section>
     <section v-if="isLoaded" class="right-hand">
 
@@ -32,6 +35,8 @@
 
 <script>
   import { fetchBlumhouseMovies } from './js/helpers.js';
+  import CharacterImage from './CharacterImage.vue';
+
   export default {
     name: 'app',
     data () {
@@ -41,6 +46,9 @@
         isLoaded: false,
         selectedItemIndex: 0
       }
+    },
+    components: {
+      CharacterImage
     },
     methods: {
       handleArrowClick: function(e) {
