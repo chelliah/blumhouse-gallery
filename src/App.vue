@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <section class="left-hand">left hand</section>
+    <section v-if="isLoaded" class="left-hand">
+      <img :src="movieItems[selectedItemIndex]['imageURL']">
+    </section>
     <section v-if="isLoaded" class="right-hand">
 
       <h1>{{ movieItems[selectedItemIndex]['Title'] }}</h1>

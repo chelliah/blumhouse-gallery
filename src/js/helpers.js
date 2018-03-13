@@ -1,5 +1,8 @@
 import css from '../styles/app.scss';
 import axios from 'axios';
+import getOut from '../assets/get-out.svg'
+import split from '../assets/split.svg'
+import halloween from '../assets/halloween.svg'
 import Vue from 'vue';
 
 export const MOVIES_DATA = {
@@ -7,12 +10,12 @@ export const MOVIES_DATA = {
         {
             id: 'tt5052448',
             name: 'Get Out',
-            director: 'Jordan Peele'
+            imageURL: getOut
         },
         {
             id: 'tt4972582',
             name: 'Split',
-            director: 'M. Night Shamalan'
+            imageURL: split
         },
         // {
         //     id: 'tt2428170',
@@ -22,20 +25,23 @@ export const MOVIES_DATA = {
         {
             id: 'tt1502407',
             name: 'Halloween',
-            director: 'Not john carpenter'
+            imageURL: halloween
         }
     ]
 }
 
-const searchById = (title) => {
-    return axios.get(`http://www.omdbapi.com/?i=${title}&plot=full&apikey=2ee7cc5c`).then((result) => {
-        return result.data;
+const searchById = (movie) => {
+    return axios.get(`http://www.omdbapi.com/?i=${movie.id}&plot=full&apikey=2ee7cc5c`).then((result) => {
+        return {
+            ...movie,
+            ...result.data
+        };
     });
 }
 
 export const fetchBlumhouseMovies = () => {
     return Promise.all(
-        MOVIES_DATA.items.map((movie) => searchById(movie.id))
+        MOVIES_DATA.items.map((movie) => searchById(movie))
     ).then((movies) => {
         console.log('movies', movies);
         return movies;
