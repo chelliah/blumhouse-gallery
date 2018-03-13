@@ -1,24 +1,25 @@
 <template>
   <div id="app">
     <section class="left-hand">left hand</section>
-    <section class="right-hand">
+    <section v-if="isLoaded" class="right-hand">
+
+      <h1>{{ movieItems[selectedItemIndex]['Title'] }}</h1>
       <transition
         name="component-fade"
         mode="out-in">
         <section v-bind:key="selectedItemIndex">
-          <h1>{{ movieItems[selectedItemIndex].title }}</h1>
           <section class="movie-details-section">
             <div class="detail-section">
               <h3>Director:</h3>
-              <span>{{ movieItems[selectedItemIndex].director }}</span>
+              <span>{{ movieItems[selectedItemIndex]['Director'] }}</span>
             </div>
             <div class="detail-section">
               <h3>Starring:</h3>
-              <span>{{ movieItems[selectedItemIndex].starring }}</span>
+              <span>{{ movieItems[selectedItemIndex]['Actors'] }}</span>
             </div>
             <div class="detail-section">
               <h3>Synopsis:</h3>
-              <span>{{ movieItems[selectedItemIndex].synopsis }}</span>
+              <span>{{ movieItems[selectedItemIndex]['Plot'] }}</span>
             </div>
           </section>
         </section>
@@ -28,47 +29,12 @@
 </template>
 
 <script>
-  // const handleArrowClick = (e) => {
-  //   console.log(e)
-  //   if(e.key == 'ArrowRight') {
-  //     selectedItemIndex = Math.min((movieItems.length - 1), selectedItemIndex + 1);
-  //   }
-  //   else if (e.key == 'ArrowLeft') {
-  //     selectedItemIndex = Math.max(0, selectedItemIndex + 1);
-  //   }
-  // }
-  // window.addEventListener('keydown', handleArrowClick)
-
+  import { fetchBlumhouseMovies } from './js/helpers.js';
   export default {
     name: 'app',
     data () {
       return {
-        movieItems: [
-          {
-              title: 'Get Out',
-              director: 'Jordan Peele',
-              starring: 'Daniel Kaluuya, Allison Williams',
-              synopsis: 'A black man goes to visit his white girlfriends family in suburban Conneticut. They’re some really crazy white people who like steal bodies and stuff. There’s some tea cup hypnosis, and this freako brother.'
-          },
-          {
-              title: 'Split',
-              director: 'Jordan Peele',
-              starring: 'Daniel Kaluuya, Allison Williams',
-              synopsis: 'A black man goes to visit his white girlfriends family in suburban Conneticut. They’re some really crazy white people who like steal bodies and stuff. There’s some tea cup hypnosis, and this freako brother.'
-          },
-          {
-              title: 'Another one',
-              director: 'Jordan Peele',
-              starring: 'Daniel Kaluuya, Allison Williams',
-              synopsis: 'A black man goes to visit his white girlfriends family in suburban Conneticut. They’re some really crazy white people who like steal bodies and stuff. There’s some tea cup hypnosis, and this freako brother.'
-          },
-          {
-              title: 'the last one',
-              director: 'Jordan Peele',
-              starring: 'Daniel Kaluuya, Allison Williams',
-              synopsis: 'A black man goes to visit his white girlfriends family in suburban Conneticut. They’re some really crazy white people who like steal bodies and stuff. There’s some tea cup hypnosis, and this freako brother.'
-          }
-        ],
+        movieItems: [],
         isMovingLeft: false,
         isLoaded: false,
         selectedItemIndex: 0
@@ -84,11 +50,19 @@
           this.selectedItemIndex = Math.max(0, this.selectedItemIndex - 1);
           this.isMovingLeft = true;
         }
+      },
+      setMovies: function(movies) {
+        console.log(movies)
+        this.movieItems = movies;
+        this.isLoaded = true;
       }
     },
     mounted() {
       // Register an event listener when the Vue component is ready
       window.addEventListener('keydown', this.handleArrowClick)
+      fetchBlumhouseMovies().then((movies) => {
+        this.setMovies(movies);
+      })
     },
 
     beforeDestroy() {
@@ -99,16 +73,26 @@
 </script>
 
 <style lang="scss">
-#app {
+body, #app {
+  box-sizing: border-box;
+  position: relative;
+}
+body {
+  height: 100vh;
+  padding: 20px;
   margin: 0;
+}
+#app {
+  height: 100%;
   display: flex;
+  background: hsla(0,0,0,.08);
 
   > section {
     flex-basis: 50%
   }
 
   .component-fade-enter-active, .component-fade-leave-active {
-    transition: opacity .3s ease, transform 0.3s ease;
+    transition: opacity .3s ease-out, transform 0.3s ease;
   }
   .component-fade-enter {
       /* .component-fade-leave-active below version 2.1.8 */
