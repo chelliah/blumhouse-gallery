@@ -16,12 +16,12 @@ export const MOVIES_DATA = {
             name: 'Get Out',
             imageURL: getOutPNG,
             trianglePath: "128.87 15.93 686.82 410.02 172.74 725.05 128.87 15.93",
-            filterMatrix:  `0   0   0.5   0   0
-                            0.4   0.6  0   0.1   0
-                            0  0   3   0.4   0
+            filterMatrix:  `0   0   1.2   0   0
+                            0.6   0.6  0   0.05   0
+                            0  0   2   0.5   0
                             0   0   0   1   0`,
-            tracePaths: compoundPaths.getOut
-            // tracePaths: getOutTracePaths
+            // tracePaths: compoundPaths.getOut
+            tracePaths: getOutTracePaths
         },
         {
             id: 'tt4972582',
@@ -32,8 +32,8 @@ export const MOVIES_DATA = {
                             0   0.2  0   0   0
                             0  0   0   0.5   0
                             0   0   0   1   0`,
-            tracePaths: compoundPaths.split
-            // tracePaths: splitTracePaths
+            // tracePaths: compoundPaths.split
+            tracePaths: splitTracePaths
         },
         // {
         //     id: 'tt2428170',
@@ -46,11 +46,11 @@ export const MOVIES_DATA = {
             imageURL: halloweenPNG,
             trianglePath: "35.56 228.76 660.3 58.23 463.66 738.49 35.56 228.76",
             filterMatrix: `0.2  0   0   0   0
-                            0   0.8  0   0.3   0
+                            0   1.5  0   0.15   0
                             0  0   0.25  0.2   0
                             0   0   0   1   0`,
-            tracePaths: compoundPaths.halloween
-            // tracePaths: halloweenTracePaths
+            // tracePaths: compoundPaths.halloween
+            tracePaths: halloweenTracePaths
         }
     ]
 }

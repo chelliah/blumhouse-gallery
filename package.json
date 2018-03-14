@@ -32,6 +32,7 @@
   "dependencies": {
     "animejs": "^2.2.0",
     "axios": "^0.18.0",
+    "kute.js": "^1.6.5",
     "vue": "^2.5.13"
   }
 }

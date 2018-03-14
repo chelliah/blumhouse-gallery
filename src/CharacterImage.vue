@@ -34,9 +34,9 @@
             </g>
         </g>
         <g id="traces">
-            <!-- <path v-for="(value, key) in tracePaths" :key="key" :class="'cls-4 ' + `trace-path-${key}`" :d="value" /> -->
+            <path v-for="(value, key) in tracePathsTweened" :key="key" class="cls-4" :id="`trace-path-${key}`" :d="value"/>
             <!-- <path id="trace-path" class="cls-4" v-bind:d="tracePathsTweened" /> -->
-            <path id="trace-path" class="cls-4" d=""/>
+            <!-- <path id="trace-path" class="cls-4" d=""/> -->
         </g>
         </svg>
   </section>
@@ -44,6 +44,8 @@
 
 <script>
     import TweenLite from './vendors/TweenLite.js';
+    import kute from 'kute.js'
+    import kuteSVG from 'kute.js/kute-svg'
     import anime from 'animejs';
 
     export default {
@@ -51,7 +53,7 @@
         data () {
             return {
                 trianglePathTweened: this.trianglePath,
-                tracePathsTweened: this.tracePaths,
+                tracePathsTweened: Object.assign({}, this.tracePaths),
                 filterTweened: this.filterMatrix
             }
         },
@@ -73,12 +75,24 @@
             },
             tracePaths: function (newPaths) {
                 newPaths.forEach((path, index) => {
-                    anime({
-                        targets: `.trace-path-${key}`,
-                        d: path,
-                        duration: 500,
-                        easing: "easeInOutSine"
-                    })
+                    // anime({
+                    //     targets: `.trace-path-${index}`,
+                    //     d: path,
+                    //     duration: 500,
+                    //     easing: "easeInOutSine"
+                    // })
+                    kute.to( `#trace-path-${index}`, {
+                        path: path,
+                    }, {
+                        delay: 500,
+                        duration: 500 + (index*5),
+                        easing: 'easeIn'
+                        }).start();
+                    // TweenLite.to(
+                    //     this.$data.tracePathsTweened,
+                    //     0.5,
+                    //     { [index]: path }
+                    // )
                 })
                 // TweenLite.to(
                 //     this.$data,
@@ -96,6 +110,14 @@
         },
         mounted: function(){
             console.log(this.tracePaths);
+            // this.tracePaths.forEach((path, index) => {
+            //     anime({
+            //             targets: `trace-path-${index}`,
+            //             d: path,
+            //             duration: 500,
+            //             easing: "easeInOutSine"
+            //         })
+            // })
         },
         props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix']
 
