@@ -15,7 +15,9 @@
             </clipPath>
         </defs>
         <title>get-out-cropped</title>
-        <g id="imageclip">
+        <g
+            id="imageclip"
+            :transform="`${ (transformData['imageclip']) ? transformData['imageclip'].transform : 'translate(0,0)'}`">
             <g class="cls-2">
                 <g id="svg-image">
                     <g class="cls-3" fill="none">
@@ -34,7 +36,13 @@
             </g>
         </g>
         <g id="traces">
-            <path v-for="(value, key) in tracePathsTweened" :key="key" class="cls-4" :id="`trace-path-${key}`" :d="value"/>
+            <path
+                v-for="(value, key) in tracePathsTweened"
+                :key="key"
+                class="cls-4"
+                :transform="`${ (transformData['trace-path-' + key]) ? transformData['trace-path-' + key].transform : 'translate(0,0)'}`"
+                :id="`trace-path-${key}`"
+                :d="value"/>
             <!-- <path id="trace-path" class="cls-4" v-bind:d="tracePathsTweened" /> -->
             <!-- <path id="trace-path" class="cls-4" d=""/> -->
         </g>
@@ -46,7 +54,6 @@
     import TweenLite from './vendors/TweenLite.js';
     import kute from 'kute.js'
     import kuteSVG from 'kute.js/kute-svg'
-    import anime from 'animejs';
 
     export default {
         name: 'characterImage',
@@ -54,7 +61,8 @@
             return {
                 trianglePathTweened: this.trianglePath,
                 tracePathsTweened: Object.assign({}, this.tracePaths),
-                filterTweened: this.filterMatrix
+                filterTweened: this.filterMatrix,
+                transformData: this.generateTransformData(this.tracePaths)
             }
         },
         watch: {
@@ -64,7 +72,6 @@
                     0.5,
                     { filterTweened: newMatrix }
     	        )
-                // this.filterTweened = newMatrix;
             },
             trianglePath: function (newPath) {
 			    TweenLite.to(
@@ -75,51 +82,81 @@
             },
             tracePaths: function (newPaths) {
                 newPaths.forEach((path, index) => {
-                    // anime({
-                    //     targets: `.trace-path-${index}`,
-                    //     d: path,
-                    //     duration: 500,
-                    //     easing: "easeInOutSine"
-                    // })
+
                     kute.to( `#trace-path-${index}`, {
                         path: path,
                     }, {
-                        delay: 500,
+                        delay: 250 - (index*5),
                         duration: 500 + (index*5),
-                        easing: 'easeIn'
-                        }).start();
-                    // TweenLite.to(
-                    //     this.$data.tracePathsTweened,
-                    //     0.5,
-                    //     { [index]: path }
-                    // )
+                        easing: 'easeInQuad'
+                    }).start();
                 })
-                // TweenLite.to(
-                //     this.$data,
-                //     0.5,
-                //     { tracePathsTweened: newPath }
-                // )
-                // anime({
-                //     targets: "#trace-path",
-                //     d: newPath,
-                //     duration: 500,
-                //     easing: "easeInOutSine"
-                // });
-                // this.tracePathsTweened = newPath;
+
+                this.$data.transformData = this.generateTransformData(newPaths)
             }
         },
-        mounted: function(){
-            console.log(this.tracePaths);
-            // this.tracePaths.forEach((path, index) => {
-            //     anime({
-            //             targets: `trace-path-${index}`,
-            //             d: path,
-            //             duration: 500,
-            //             easing: "easeInOutSine"
-            //         })
-            // })
+        methods: {
+            generateTransformData: function(paths) {
+                let transformData = {}
+
+                const image = document.getElementById("imageclip")
+
+                if (image) {
+                    transformData['imageclip'] = {
+                        coordinates: image.getBoundingClientRect(),
+                        transform: 'translate(0, 0)'
+                    }
+                }
+
+                paths.forEach((path, index) => {
+                    let pathNode = document.getElementById(`trace-path-${index}`)
+                    if(pathNode) {
+                        transformData[`trace-path-${index}`] = {
+                            coordinates: pathNode.getBoundingClientRect(),
+                            transform: 'translate(0, 0)'
+                        }
+                    }
+                })
+                console.log(transformData)
+                return transformData;
+
+            },
+            handleMouseMove: function(e) {
+                // console.log(this.transformData);
+                const yPos = e.pageY;
+                const xPos = e.pageX;
+                const updatedTransformData = this.transformData;
+                const MAX_DISTANCE = 25;
+
+                if(updatedTransformData) {
+                    Object.keys(updatedTransformData).map((dataKey, index) => {
+                        const coordinates = updatedTransformData[dataKey].coordinates
+                        let elX = Math.floor(coordinates.x + (coordinates.width/2))
+                        let elY = Math.floor(coordinates.y + coordinates.height/2)
+                        let xDistance = Math.sqrt(elX - xPos)
+                        let yDistance = Math.sqrt(elY - yPos)
+                        updatedTransformData[dataKey].transform =
+                            `translate( ${Math.abs(xDistance) > 10 ? (MAX_DISTANCE/xDistance) : '0'} , ${Math.abs(yDistance) > 10 ? (MAX_DISTANCE/yDistance) : '0'})`
+                        // console.log(coordinates)
+                    })
+                }
+
+                this.transformData = updatedTransformData
+
+            }
         },
-        props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix']
+        props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix'],
+        mounted() {
+            // Register an event listener when the Vue component is ready
+            window.addEventListener('mousemove', this.handleMouseMove)
+
+            this.transformData = this.generateTransformData(this.tracePaths)
+        },
+
+        beforeDestroy() {
+            // Unregister the event listener before destroying this Vue instance
+            window.removeEventListener('mousemove', this.handleMouseMove)
+        }
 
   }
 </script>

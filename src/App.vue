@@ -63,7 +63,6 @@
         }
       },
       setMovies: function(movies) {
-        console.log(movies)
         this.movieItems = movies;
         this.isLoaded = true;
       }

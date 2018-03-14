@@ -68,7 +68,6 @@ export const fetchBlumhouseMovies = () => {
     return Promise.all(
         MOVIES_DATA.items.map((movie) => searchById(movie))
     ).then((movies) => {
-        console.log('movies', movies);
         return movies;
     })
 }
