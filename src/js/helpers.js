@@ -6,7 +6,7 @@ import halloween from '../assets/halloween.svg'
 import getOutPNG from '../assets/get-out.jpg'
 import splitPNG from '../assets/split.jpg'
 import halloweenPNG from '../assets/halloween.jpg'
-import { splitTracePaths, getOutTracePaths, halloweenTracePaths } from './svgPaths.js';
+import { splitTracePaths, getOutTracePaths, halloweenTracePaths, compoundPaths } from './svgPaths.js';
 import Vue from 'vue';
 
 export const MOVIES_DATA = {
@@ -16,14 +16,24 @@ export const MOVIES_DATA = {
             name: 'Get Out',
             imageURL: getOutPNG,
             trianglePath: "128.87 15.93 686.82 410.02 172.74 725.05 128.87 15.93",
-            tracePaths: getOutTracePaths
+            filterMatrix:  `0   0   0.5   0   0
+                            0.4   0.6  0   0.1   0
+                            0  0   3   0.4   0
+                            0   0   0   1   0`,
+            tracePaths: compoundPaths.getOut
+            // tracePaths: getOutTracePaths
         },
         {
             id: 'tt4972582',
             name: 'Split',
             imageURL: splitPNG,
             trianglePath: "92.2 73.42 674.75 257.23 210.38 725.05 92.2 73.42",
-            tracePaths: splitTracePaths
+            filterMatrix: `3   0   0.5   0   0
+                            0   0.2  0   0   0
+                            0  0   0   0.5   0
+                            0   0   0   1   0`,
+            tracePaths: compoundPaths.split
+            // tracePaths: splitTracePaths
         },
         // {
         //     id: 'tt2428170',
@@ -35,7 +45,12 @@ export const MOVIES_DATA = {
             name: 'Halloween',
             imageURL: halloweenPNG,
             trianglePath: "35.56 228.76 660.3 58.23 463.66 738.49 35.56 228.76",
-            tracePaths: halloweenTracePaths
+            filterMatrix: `0.2  0   0   0   0
+                            0   0.8  0   0.3   0
+                            0  0   0.25  0.2   0
+                            0   0   0   1   0`,
+            tracePaths: compoundPaths.halloween
+            // tracePaths: halloweenTracePaths
         }
     ]
 }

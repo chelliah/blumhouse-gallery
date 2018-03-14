@@ -2,6 +2,7 @@
   <div id="app">
     <section v-if="isLoaded" class="left-hand">
       <character-image
+        :filterMatrix="movieItems[selectedItemIndex]['filterMatrix']"
         :imageURL="movieItems[selectedItemIndex]['imageURL']"
         :trianglePath="movieItems[selectedItemIndex]['trianglePath']"
         :tracePaths="movieItems[selectedItemIndex]['tracePaths']"/>

@@ -2,6 +2,11 @@
   <section id="character-image">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 768 768">
         <defs>
+            <filter id="linear">
+                <feColorMatrix
+                    type="matrix"
+                    :values="filterTweened"/>
+            </filter>
             <clipPath id="clip-path">
                 <polygon class="cls-1" :points="trianglePathTweened"/>
             </clipPath>
@@ -29,9 +34,9 @@
             </g>
         </g>
         <g id="traces">
-            <g v-for="(value, key) in tracePathsTweened" :key="key" fill="none">
-                <path class="cls-4" :d="value" />
-            </g>
+            <!-- <path v-for="(value, key) in tracePaths" :key="key" :class="'cls-4 ' + `trace-path-${key}`" :d="value" /> -->
+            <!-- <path id="trace-path" class="cls-4" v-bind:d="tracePathsTweened" /> -->
+            <path id="trace-path" class="cls-4" d=""/>
         </g>
         </svg>
   </section>
@@ -39,18 +44,26 @@
 
 <script>
     import TweenLite from './vendors/TweenLite.js';
+    import anime from 'animejs';
 
     export default {
         name: 'characterImage',
         data () {
-        return {
-            // imageURL: this.imageURL,
-            trianglePathTweened: this.trianglePath,
-            tracePathsTweened: Object.assign({}, this.tracePaths)
-            // tracePaths: this.tracePaths
-        }
+            return {
+                trianglePathTweened: this.trianglePath,
+                tracePathsTweened: this.tracePaths,
+                filterTweened: this.filterMatrix
+            }
         },
         watch: {
+            filterMatrix: function(newMatrix) {
+                TweenLite.to(
+                    this.$data,
+                    0.5,
+                    { filterTweened: newMatrix }
+    	        )
+                // this.filterTweened = newMatrix;
+            },
             trianglePath: function (newPath) {
 			    TweenLite.to(
                     this.$data,
@@ -59,18 +72,32 @@
     	        )
             },
             tracePaths: function (newPaths) {
-                newPaths.forEach((newPath, index) => {
-                    TweenLite.to(
-                        this.$data.tracePathsTweened,
-                        5,
-                        {[index]: newPath}
-                    )
-                });
+                newPaths.forEach((path, index) => {
+                    anime({
+                        targets: `.trace-path-${key}`,
+                        d: path,
+                        duration: 500,
+                        easing: "easeInOutSine"
+                    })
+                })
+                // TweenLite.to(
+                //     this.$data,
+                //     0.5,
+                //     { tracePathsTweened: newPath }
+                // )
+                // anime({
+                //     targets: "#trace-path",
+                //     d: newPath,
+                //     duration: 500,
+                //     easing: "easeInOutSine"
+                // });
+                // this.tracePathsTweened = newPath;
             }
         },
-        props: ['imageURL', 'trianglePath', 'tracePaths'],
-        methods: {
+        mounted: function(){
+            console.log(this.tracePaths);
         },
+        props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix']
 
   }
 </script>
@@ -92,8 +119,9 @@
 
     .cls-4 {
         stroke: #fff;
-        stroke-width: 2;
-        fill: transparent;
+        stroke-miterlimit: 10;
+        stroke-width: 3px;
+        fill: none;
     }
 
     .image-fade-enter-active, .image-fade-leave-active {
@@ -108,6 +136,10 @@
     /* .component-fade-leave-active below version 2.1.8 */ {
         opacity: 0;
 
+    }
+
+    #svg-image {
+        filter: url('#linear');
     }
 
 </style>
