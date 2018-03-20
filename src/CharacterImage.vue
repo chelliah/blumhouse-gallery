@@ -1,6 +1,7 @@
 <template>
   <section id="character-image">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 768 768">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+      width=100% height=100% preserveAspectRatio="xMinYMid meet"  viewBox="0 0 768 768">
         <defs>
             <filter id="linear">
                 <feColorMatrix
@@ -171,7 +172,10 @@
 </script>
 
 <style lang="scss">
-
+    #character-image {
+        position: relative;
+        z-index: 3;
+    }
     .cls-1 {
         fill: none;
     }
@@ -182,7 +186,7 @@
 
     .cls-3 {
         clip-path: url(#clip-path-2);
-        fill: rgba(0,0,0,0.5);
+        fill: rgba(112, 112, 112, 1);
     }
 
     .cls-4 {
@@ -208,6 +212,11 @@
 
     #svg-image {
         filter: url('#linear');
+
     }
 
+    #character-image {
+        height: 100%;
+        max-height: 100%
+    }
 </style>
