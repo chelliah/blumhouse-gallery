@@ -2,8 +2,14 @@
   <section id="movie-details">
       <section class="detais-container">
         <section class="title-container">
-            <h2>{{ movieDetails['name'] }}</h2>
-            <p>{{ movieDetails['release_date'].slice(0,4) }}</p>
+            <h2>
+                <span
+                :key="key"
+                v-for="(value, key) in tweenedTitle">{{ value }}</span>
+            </h2>
+            <p
+                v-if="complete"
+                :style="`color: ${ movieDetails.mainColor };`">{{ movieDetails['release_date'].slice(0,4) }}</p>
         </section>
         <transition
             name="component-fade"
@@ -24,8 +30,13 @@
                         <svg width="200px" height="240px" :aria-labelledby="value.id" viewBox="0 0 200 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
                             <title :id="value.id" >{{ value.name }}</title>
-                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="3.3" fill="#D8D8D8">
+                            <filter id="linear">
+                                <feColorMatrix
+                                    type="matrix"
+                                    :values="movieDetails.filterMatrix"/>
+                            </filter>
+                            <g :class="`char-bg-polygon ${ (movieDetails.name) == 'Get Out' ? 'get-out' : '' }`" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g id="3.3" >
                                     <polygon id="Triangle" :points="value.background_shape"></polygon>
                                 </g>
                             </g>
@@ -58,26 +69,74 @@
         <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
         <desc>Created with Sketch.</desc>
         <defs></defs>
-        <rect id="Rectangle-4" transform="translate(1126.625520, 681.625520) rotate(-20.000000) translate(-1612.625520, -681.625520) " x="733.62552" y="-197.37448" width="1758" height="1758"></rect>
+        <rect
+            id="Rectangle-4"
+            :fill="movieDetails.contrastColor"
+            transform="translate(1126.625520, 681.625520) rotate(-20.000000) translate(-1612.625520, -681.625520) " x="733.62552" y="-197.37448" width="1758" height="1758"></rect>
     </svg>
   </section>
 </template>
 
 <script>
-
+    const chars = ['$','%','#','@','&','=','*','/'];
+    const charsTotal = chars.length;
+    const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     export default {
         name: 'movieDetails',
         data () {
             return {
+                tweenedTitle: '',
+                complete: false,
+                timeouts: []
             }
         },
         watch: {
-
+            movieDetails: function() {
+                this.splitTitle()
+            },
         },
         methods: {
+            splitTitle: function() {
+                this.clearTimeouts()
+                this.tweenedTitle = this.movieDetails.name.split('')
+                this.complete = false;
+                let cnt = 0;
+                this.tweenedTitle.forEach((letter, index) => {
+                    const initialLetter = letter;
+                    let loopTimeout;
+                    const loop = () => {
+                        this.tweenedTitle[index] = chars[getRandomInt(0,charsTotal-1)];
+                        this.tweenedTitle = Array.from(this.tweenedTitle)
+                        loopTimeout = setTimeout(loop, getRandomInt(75,150));
+                        this.timeouts.push(loopTimeout);
+                    };
+                    loop();
+
+                    const timeout = setTimeout(() => {
+                        clearTimeout(loopTimeout);
+                        this.tweenedTitle[index] = initialLetter;
+                        this.tweenedTitle = Array.from(this.tweenedTitle)
+                        ++cnt;
+                        if ( cnt === this.tweenedTitle.length ) {
+                            this.complete = true;
+                        }
+                    }, index*80+400);
+
+                    this.timeouts.push(timeout);
+                })
+            },
+            clearTimeouts: function(){
+                if(this.timeouts.length) {
+                    this.timeouts.forEach((timeout) => {
+                        clearTimeout(timeout);
+                    })
+                }
+                this.timeouts = []
+            }
         },
         props: ['movieDetails'],
         mounted() {
+            this.splitTitle()
         },
         beforeDestroy() {
         }
@@ -101,15 +160,19 @@
 
 .title-container {
     display: flex;
-    justify-content: flex-start
+    justify-content: flex-start;
+    margin-bottom: 8px;
 
     h2 {
-        margin-right: 16px;
+        margin: 8px 16px 0 0;
+        font-size: 40px;
     }
 
     p {
-        margin-left: 16px;
+        margin: 0 0 0 16px;
+        font-size: 32px;
         align-self: baseline;
+        transition: color 0.3s;
     }
 }
 
@@ -124,7 +187,9 @@
     padding: 8px;
 
     h4 {
-        margin: 0 0 8px 0
+        margin: 0 0 8px 0;
+        font-weight: 600;
+        // text-transform: uppercase;
     }
     p {
         margin: 0;
@@ -144,7 +209,8 @@
     .img-container {
         height: 160px;
         width: 120px;
-        padding: 20px 40px 0;
+        box-shadow: 0 0 12px rgba(30, 30, 30, 0.3);
+        margin: 20px 40px 0;
         overflow: hidden;
 
         img {
@@ -156,13 +222,14 @@
     h5 {
         text-transform: uppercase;
         opacity: 0.8;
-        margin: 0 0 8px 0;
-        padding: 0 40px;
+        margin:  8px 0 0;
+        padding: 0 20px 0 40px;
     }
 
     h4 {
         margin: 0;
-        padding: 0 40px;
+        padding: 0 20px 0 40px;
+        font-weight: 600
     }
     .z-2 {
         position: relative;
@@ -172,6 +239,18 @@
         position: absolute;
         top: 0;
         z-index: 1;
+    }
+}
+
+.movie-details-section {
+    padding: 0 36px;
+}
+.char-bg-polygon {
+    fill: #999999;
+    filter: url('#linear');
+
+    &.get-out {
+        fill: #6d6d6d;
     }
 }
 </style>

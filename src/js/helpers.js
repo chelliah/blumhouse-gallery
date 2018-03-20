@@ -21,8 +21,10 @@ export const MOVIES_DATA = {
             trianglePath: "128.87 15.93 686.82 410.02 172.74 725.05 128.87 15.93",
             filterMatrix:  `0   0   1.2   0   0
                             0.6   0.6  0   0.05   0
-                            0  0   2   0.5   0
+                            0  0   2   0.9   0
                             0   0   0   1   0`,
+            contrastColor: '#E3B256',
+            mainColor: '#7381f5',
             tracePaths: getOutTracePaths,
             fetchedActors: false,
             rt: '99%',
@@ -33,7 +35,7 @@ export const MOVIES_DATA = {
                     name: 'Jordan Peele',
                     role: 'Director',
                     id: '291263',
-                    background_shape: '80 10 200 110 110 210 16 145 47 103'
+                    background_shape: '80 10 180 110 110 210 16 145 47 103'
                 },
                 {
                     name: 'Daniel Kaluuya',
@@ -45,7 +47,7 @@ export const MOVIES_DATA = {
                     name: 'Allison Williams',
                     role: 'Actor',
                     id: '1255540',
-                    background_shape: '54 27 169 54 54 204'
+                    background_shape: '54 07 169 54 54 224'
                 }
             ]
         },
@@ -59,6 +61,8 @@ export const MOVIES_DATA = {
                             0   0.2  0   0   0
                             0  0   0   0.5   0
                             0   0   0   1   0`,
+            contrastColor: '#56c6e3',
+            mainColor: '#ff47bc',
             tracePaths: splitTracePaths,
             fetchedActors: false,
             rt: '75%',
@@ -101,6 +105,8 @@ export const MOVIES_DATA = {
                             0  0   0.25  0.2   0
                             0   0   0   1   0`,
             tracePaths: halloweenTracePaths,
+            contrastColor: '#e35656',
+            mainColor: '#47d090',
             fetchedActors: false,
             rt: '-',
             metacritic: '-',
@@ -110,7 +116,7 @@ export const MOVIES_DATA = {
                     name: 'David Gordon Green',
                     role: 'Director',
                     id: '64141',
-                    background_shape: '73 0 173 53 173 149 28 198 73 84',
+                    background_shape: '73 0 173 53 183 149 28 198 73 84',
                 },
                 {
                     name: 'Jamie Lee Curtis',

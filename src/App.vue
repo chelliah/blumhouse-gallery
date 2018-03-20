@@ -12,6 +12,13 @@
             </g>
         </svg>
       </section>
+      <section class="header-nav">
+        <span
+          :key="key"
+          :class="`nav-item ${(selectedItemIndex == key) ? 'selected-item' : ''}`"
+          v-on:click="selectedItemIndex = key"
+          v-for="(value, key) in movieItems"></span>
+      </section>
     </header>
     <section v-if="isLoaded" class="left-hand">
       <character-image
@@ -124,6 +131,9 @@ p {
     grid-column-end: 5;
     grid-row-start: 1;
     grid-row-end: 1;
+
+    display: flex;
+    justify-content: space-between;
   }
 
   .header-icon {
@@ -132,6 +142,33 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .header-nav {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative;
+    z-index: 2;
+
+    .nav-item {
+      width: 40px;
+      height: 8px;
+      margin-bottom: 4px;
+      background: #fff;
+      opacity: 0.5;
+      transform-origin: 100% 50%;
+      transition: opacity 0.3s 0.1s, transform 0.3s;
+      cursor: pointer;
+
+      &.selected-item {
+        transform: scaleX(1.3);
+        opacity: 1;
+      }
+    }
+
   }
 
   .left-hand {
@@ -166,19 +203,6 @@ p {
   .movie-details-section {
     display: flex;
     flex-direction: column;
-  }
-
-  .detail-section {
-    display: flex;
-    text-align: left;
-    padding-right: 48px;
-    align-items: baseline;
-
-    h3 {
-      flex-basis: 80px;
-      flex-shrink: 0;
-      margin: 0 8px 0 0;
-    }
   }
 }
 
