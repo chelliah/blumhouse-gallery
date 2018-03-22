@@ -24,6 +24,7 @@
       <movie-details
         :clearBlur="clearBlur"
         :blurItems="blurItems"
+        :notableFigures="movieItems[selectedItemIndex]['notableFigures']"
         :movieDetails="movieItems[selectedItemIndex]"/>
     </section>
     <section v-if="isLoaded" class="left-hand">
@@ -90,7 +91,7 @@
         this.fetchActors()
         TweenLite.to(
           this.$data,
-          0.3,
+          0.5,
           { colorProps: {
             ease: Power2.easeInOut,
             tweenedContrastColor: this.movieItems[newIndex].contrastColor
@@ -248,7 +249,8 @@ p {
       background: #fff;
       opacity: 0.5;
       transform-origin: 100% 50%;
-      transition: opacity 0.3s 0.1s, transform 0.3s;
+      transition: opacity 0.3s 0.15s cubic-bezier(0.645, 0.045, 0.355, .95),
+              transform 0.3s cubic-bezier(0.645, 0.045, 0.355, .95);
       cursor: pointer;
 
       &.selected-item {

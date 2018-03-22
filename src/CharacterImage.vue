@@ -1,7 +1,7 @@
 <template>
   <section id="character-image">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-      preserveAspectRatio="xMidYMid meet"  viewBox="0 0 768 768">
+      <svg id="character-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+      preserveAspectRatio="xMinYMin meet"  width="100%" height="125%" viewBox="0 0 768 768">
         <defs>
             <filter id="linear">
                 <feColorMatrix
@@ -164,7 +164,7 @@
         mounted() {
             // Register an event listener when the Vue component is ready
             // window.addEventListener('mousemove', this.handleMouseMove)
-
+            console.log('hm')
             this.transformData = this.generateTransformData(this.tracePaths)
         },
 
@@ -179,7 +179,12 @@
 <style lang="scss">
     #character-image {
         position: absolute;
+
+        height: 100%;
+        max-height: 100%;
+        width: 100%;
     }
+
     .cls-1 {
         fill: none;
     }
@@ -217,10 +222,5 @@
     #svg-image {
         filter: url('#linear');
 
-    }
-
-    #character-image {
-        height: 100%;
-        max-height: 100%
     }
 </style>

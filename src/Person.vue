@@ -1,18 +1,28 @@
 <template>
   <section
-        :name="name"
         :id="id"
         :class="`person ${ isOpen ? 'is-open' : ''}`"
         :style="`transform: ${this.transform};`"
         >
         <section class="z-2">
             <section class="img-container">
-                <img
-                    v-on:click="open"
-                    :src="`https://image.tmdb.org/t/p/w200/${ imageURL }`"/>
+                <transition
+                    name="generic-fade"
+                    mode="out-in">
+                    <img
+                        v-on:click="open"
+                        :key="name"
+                        :src="`https://image.tmdb.org/t/p/w200/${ imageURL }`"/>
+
+                </transition>
             </section>
             <h5>{{ role }}</h5>
-            <h4>{{ name }}</h4>
+            <transition
+                name="generic-fade"
+                mode="out-in">
+
+                <h4 :key="name">{{ name }}</h4>
+            </transition>
         </section>
         <svg width="200px" height="240px" :aria-labelledby="id" viewBox="0 0 200 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <title :id="id" >{{ name }}</title>
@@ -65,7 +75,7 @@
 			    TweenLite.to(
                     this.$data,
                     0.5,
-                    { bgFillTweened: newPath, ease: Power2.easeInOut, }
+                    { bgFillTweened: newFill, ease: Power2.easeInOut, }
     	        )
             },
             isOpen: function(shouldOpen) {
@@ -83,6 +93,9 @@
                     document.removeEventListener('click', this.close, false);
                 }
             }
+        },
+        mounted() {
+            console.log('hi')
         }
   }
 </script>
@@ -95,7 +108,7 @@
     position: relative;
     width: 200px;
     height: 240px;
-    transition: transform 0.7s cubic-bezier(.54,.05,.56,.81);
+    transition: transform 0.6s cubic-bezier(.34,.33,.4,.95);
     z-index: 7;
 
     &.is-open, &.is-open:hover {
@@ -126,6 +139,7 @@
         height: 160px;
         width: 120px;
         box-shadow: 0 0 12px rgba(30, 30, 30, 0.3);
+        background: rgba(0,0,0,0.1);
         margin: 20px 40px 0;
         overflow: hidden;
         transition: transform 0.3s;
@@ -189,11 +203,21 @@
     left: -100px;
     top: -100px;
     pointer-events: none;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.65);
+}
+.generic-fade-leave-active {
+    transition: opacity .25s ease-in;
+}
+.generic-fade-enter-active {
+    transition: opacity 0.25s ease-out;
+}
+
+.generic-fade-enter, .generic-fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
 }
 
 .biography-fade-enter-active, .biography-fade-leave-active {
-    transition: opacity .5s;
+    transition: opacity .5s cubic-bezier(0.645, 0.045, 0.355, .95);
 }
 
 .biography-fade-leave-active {

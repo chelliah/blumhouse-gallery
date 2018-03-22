@@ -12,14 +12,14 @@
                 mode="out-in">
                 <p
                     v-if="complete"
-                    :key="movieDetails.mdb_id"
+                    v-bind:key="movieDetails.mdb_id"
                     :style="`color: ${ movieDetails.mainColor };`">{{ movieDetails['release_date'].slice(0,4) }}</p>
             </transition>
         </section>
-        <section v-bind:key="movieDetails['id']">
+        <section>
             <section class="people-section">
                 <person
-                    v-for="(value, index) in movieDetails['notableFigures']"
+                    v-for="(value, index) in notableFigures"
                     :blurItems="blurItems"
                     :clearBlur="clearBlur"
                     :key="index"
@@ -144,7 +144,7 @@
                 this.timeouts = []
             }
         },
-        props: ['movieDetails', 'blurItems', 'clearBlur'],
+        props: ['movieDetails', 'notableFigures', 'blurItems', 'clearBlur'],
         mounted() {
             this.splitTitle()
         },
@@ -211,11 +211,11 @@
 }
 
 .movie-description-fade-enter-active {
-    transition: opacity 0.3s 0.3s ease-out;
+    transition: opacity 0.3s 0.2s ease-out;
 }
 
 .movie-description-fade-leave-active {
-    transition: opacity 0.3s ease-out;
+    transition: opacity 0.3s ease-in;
 }
 .movie-description-fade-enter {
     /* .component-fade-leave-active below version 2.1.8 */
