@@ -96,6 +96,7 @@
                         rt: newDetails['rt'],
                         imdb: newDetails['imdb'],
                         metacritic: newDetails['metacritic'],
+                        ease: Power2.easeInOut,
                         onUpdate: (update) => {
                             this.$data.tweenedRatings.rt = this.$data.tweenedRatings.rt.toFixed(0);
                             this.$data.tweenedRatings.imdb = this.$data.tweenedRatings.imdb.toFixed(1);
@@ -146,7 +147,6 @@
         props: ['movieDetails', 'blurItems', 'clearBlur'],
         mounted() {
             this.splitTitle()
-            console.log('ow')
         },
         beforeDestroy() {
         }

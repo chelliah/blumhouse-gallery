@@ -58,14 +58,14 @@
                 TweenLite.to(
                     this.$data,
                     0.5,
-                    { bgShapeTweened: newPath }
+                    { bgShapeTweened: newPath, ease: Power2.easeInOut, }
     	        )
             },
             bgFill: function (newFill) {
 			    TweenLite.to(
                     this.$data,
                     0.5,
-                    { bgFillTweened: newPath }
+                    { bgFillTweened: newPath, ease: Power2.easeInOut, }
     	        )
             },
             isOpen: function(shouldOpen) {
@@ -83,11 +83,6 @@
                     document.removeEventListener('click', this.close, false);
                 }
             }
-        },
-        mounted() {
-            console.log('new')
-        },
-        beforeDestroy() {
         }
   }
 </script>
@@ -209,6 +204,6 @@
     transition-delay: 1s
 }
 .biography-fade-enter, .biography-fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
+    opacity: 0;
 }
 </style>

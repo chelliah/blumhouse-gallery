@@ -1,7 +1,7 @@
 <template>
   <section id="character-image">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-      width=100% height=100% preserveAspectRatio="xMinYMid meet"  viewBox="0 0 768 768">
+      preserveAspectRatio="xMidYMid meet"  viewBox="0 0 768 768">
         <defs>
             <filter id="linear">
                 <feColorMatrix
@@ -66,18 +66,27 @@
             }
         },
         watch: {
+            mousePos: function(newPos) {
+                this.handleMouseMove(newPos)
+            },
             filterMatrix: function(newMatrix) {
                 TweenLite.to(
                     this.$data,
                     0.5,
-                    { filterTweened: newMatrix }
+                    {
+                        ease: Power3.easeInOut,
+                        filterTweened: newMatrix
+                    }
     	        )
             },
             trianglePath: function (newPath) {
 			    TweenLite.to(
                     this.$data,
                     0.5,
-                    { trianglePathTweened: newPath }
+                    {
+                        ease: Power3.easeInOut,
+                        trianglePathTweened: newPath
+                    }
     	        )
             },
             tracePaths: function (newPaths) {
@@ -86,13 +95,12 @@
                     kute.to( `#trace-path-${index}`, {
                         path: path,
                     }, {
-                        delay: 250 - (index*5),
-                        duration: 500 + (index*5),
-                        easing: 'easeInQuad'
+                        delay: (index*8),
+                        duration: 500 + ((newPaths.length - index)*5),
+                        easing: Power3.easeInOut
                     }).start();
                 })
 
-                this.$data.transformData = this.generateTransformData(newPaths)
             }
         },
         methods: {
@@ -119,11 +127,11 @@
                 return transformData;
 
             },
-            handleMouseMove: function(e) {
-                const yPos = e.pageY;
-                const xPos = e.pageX;
+            handleMouseMove: function(newPos) {
+                const yPos = newPos.y;
+                const xPos = newPos.x;
                 const updatedTransformData = this.transformData;
-                const MAX_DISTANCE = 15;
+                const MAX_DISTANCE = 10;
 
                 if(!updatedTransformData) return false;
 
@@ -152,7 +160,7 @@
 
             }
         },
-        props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix'],
+        props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix', 'mousePos'],
         mounted() {
             // Register an event listener when the Vue component is ready
             // window.addEventListener('mousemove', this.handleMouseMove)
@@ -170,7 +178,7 @@
 
 <style lang="scss">
     #character-image {
-        position: relative;
+        position: absolute;
     }
     .cls-1 {
         fill: none;

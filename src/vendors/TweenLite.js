@@ -6,7 +6,7 @@
  * @license Copyright (c) 2008-2018, GreenSock. All rights reserved.
  * This work is subject to the terms at http://greensock.com/standard-license or for
  * Club GreenSock members, the software agreement that was issued with your membership.
- * 
+ *
  * @author: Jack Doyle, jack@greensock.com
  */
 (function(window, moduleName) {
@@ -193,7 +193,7 @@
 			return (t === 1) ? 1 - r : (t === 2) ? r : (p < 0.5) ? r / 2 : 1 - (r / 2);
 		};
 
-		//create all the standard eases like Linear, Quad, Cubic, Quart, Quint, Strong, Power0, Power1, Power2, Power3, and Power4 (each with easeIn, easeOut, and easeInOut)
+		//create all the standard eases like Linear, Quad, Cubic, Quart, Quint, Strong, Power0, Power1, Power2, Power2, and Power4 (each with easeIn, easeOut, and easeInOut)
 		a = ["Linear","Quad","Cubic","Quart","Quint,Strong"];
 		i = a.length;
 		while (--i > -1) {
@@ -258,7 +258,7 @@
 				i, t, listener;
 			if (list) {
 				i = list.length;
-				if (i > 1) { 
+				if (i > 1) {
 					list = list.slice(0); //in case addEventListener() is called from within a listener/callback (otherwise the index could change, resulting in a skip)
 				}
 				t = this._eventTarget;

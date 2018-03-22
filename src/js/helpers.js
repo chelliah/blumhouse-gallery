@@ -23,7 +23,7 @@ export const MOVIES_DATA = {
                             0.6   0.6  0   0.05   0
                             0  0   2   0.9   0
                             0   0   0   1   0`,
-            contrastColor: '#E3B256',
+            contrastColor: 'rgb(227,178,86)',
             mainColor: '#7381f5',
             tracePaths: getOutTracePaths,
             fetchedActors: false,
@@ -61,7 +61,7 @@ export const MOVIES_DATA = {
                             0   0.2  0   0   0
                             0  0   0   0.5   0
                             0   0   0   1   0`,
-            contrastColor: '#56c6e3',
+            contrastColor: 'rgb(86,198,227)',
             mainColor: '#ff47bc',
             tracePaths: splitTracePaths,
             fetchedActors: false,
@@ -105,7 +105,7 @@ export const MOVIES_DATA = {
                             0  0   0.25  0.2   0
                             0   0   0   1   0`,
             tracePaths: halloweenTracePaths,
-            contrastColor: '#e35656',
+            contrastColor: 'rgb(277,86,86)',
             mainColor: '#47d090',
             fetchedActors: false,
             rt: 100,

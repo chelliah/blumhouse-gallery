@@ -43,6 +43,9 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'build.js'
   },
+  externals: {
+    'TweenLite': 'TweenLite'
+  },
   module: {
     rules: [
       {

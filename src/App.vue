@@ -28,19 +28,24 @@
     </section>
     <section v-if="isLoaded" class="left-hand">
       <character-image
+        :mousePos="mousePos"
         :filterMatrix="movieItems[selectedItemIndex]['filterMatrix']"
         :imageURL="movieItems[selectedItemIndex]['imageURL']"
         :trianglePath="movieItems[selectedItemIndex]['trianglePath']"
         :tracePaths="movieItems[selectedItemIndex]['tracePaths']"/>
     </section>
-    <svg id="bg-rect" width="65%" height="100%" preserveAspectRatio="xMinYMin slice" viewBox="0 0 954 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg
+      id="bg-rect"
+      width="65%" height="100%"
+      preserveAspectRatio="xMinYMin slice"
+      viewBox="0 0 1054 1124" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
         <desc>Created with Sketch.</desc>
         <defs></defs>
         <rect
             id="Rectangle-4"
-            :fill="`${ (isLoaded) ? movieItems[selectedItemIndex].contrastColor : '#888' }`"
-            transform="translate(1126.625520, 681.625520) rotate(-20.000000) translate(-1612.625520, -681.625520) " x="733.62552" y="-197.37448" width="1758" height="1758"></rect>
+            :fill="`${ (isLoaded) ? tweenedContrastColor : '#888' }`"
+            :transform="`translate(1126.625520, 681.625520) rotate(${-20.000000 - transformBg.y/10}) translate(${ -1597.625520 + transformBg.x }, ${ -666.625520 + transformBg.y })`" x="733.62552" y="-197.37448" width="1758" height="1758"></rect>
     </svg>
     <svg height="0">
         <defs>
@@ -54,6 +59,7 @@
 
 <script>
   import { fetchBlumhouseMovies, fetchActors } from './js/helpers.js';
+  import ColorPropsPlugin from './vendors/plugins/ColorPropsPlugin.js';
   import TweenLite from './vendors/TweenLite.js';
   import CharacterImage from './CharacterImage.vue';
   import MovieDetails from './MovieDetails.vue'
@@ -63,12 +69,16 @@
     data () {
       return {
         movieItems: [],
-        isMovingLeft: false,
         isLoaded: false,
         selectedItemIndex: 0,
-        selectedPersonId: '',
         isBlurred: false,
-        blurIntensityTweened: 0.1
+        mousePos: {},
+        bgPos: {},
+        tweenedContrastColor: '#666',
+        transformBg: {
+          x: 0,
+          y: 0
+        }
       }
     },
     components: {
@@ -76,15 +86,16 @@
       MovieDetails
     },
     watch: {
-      selectedItemIndex: function() {
+      selectedItemIndex: function(newIndex) {
         this.fetchActors()
-      },
-      isBlurred: function(isBlurred) {
         TweenLite.to(
-            this.$data,
-            0.5,
-            { blurIntensityTweened: (isBlurred) ? 3 : 0 }
-        ).delay(1);
+          this.$data,
+          0.3,
+          { colorProps: {
+            ease: Power2.easeInOut,
+            tweenedContrastColor: this.movieItems[newIndex].contrastColor
+          }}
+        ).delay(0.3)
       }
     },
     methods: {
@@ -92,15 +103,14 @@
         if(this.isBlurred) return false;
         if(e.key == 'ArrowRight') {
           this.selectedItemIndex = Math.min((this.movieItems.length - 1), (this.selectedItemIndex + 1));
-          this.isMovingLeft = false;
         }
         else if (e.key == 'ArrowLeft') {
           this.selectedItemIndex = Math.max(0, this.selectedItemIndex - 1);
-          this.isMovingLeft = true;
         }
       },
       setMovies: function(movies) {
         this.movieItems = movies;
+        this.tweenedContrastColor = this.movieItems[this.selectedItemIndex].contrastColor;
         this.isLoaded = true;
       },
       fetchActors: function() {
@@ -128,6 +138,22 @@
             element.classList.toggle('blur');
         })
         this.isBlurred = true;
+      },
+      handleMouseMove: function(event) {
+        const MAX_DISTANCE = 15;
+        this.mousePos = {
+          x: event.pageX,
+          y: event.pageY
+        }
+
+        let elX = Math.floor(this.bgPos.x + (this.bgPos.width/2))
+        let elY = Math.floor(this.bgPos.y + this.bgPos.height/2)
+        let xDistance = (elX - event.pageX)/(document.documentElement.clientWidth/MAX_DISTANCE)
+        let yDistance = (elY - event.pageY)/(document.documentElement.clientWidth/MAX_DISTANCE)
+        this.transformBg = {
+          x: -xDistance,
+          y: -yDistance
+        }
       }
     },
     mounted() {
@@ -137,11 +163,14 @@
         this.setMovies(movies);
         this.fetchActors();
       })
+      window.addEventListener('mousemove', this.handleMouseMove)
+      this.bgPos = document.getElementById("bg-rect").getBoundingClientRect()
     },
 
     beforeDestroy() {
       // Unregister the event listener before destroying this Vue instance
       window.removeEventListener('keydown', this.handleArrowClick)
+      window.removeEventListener('mousemove', this.handleMouseMove)
     }
   }
 </script>
@@ -236,6 +265,10 @@ p {
     grid-row-start: 2;
     grid-row-end: 3;
     z-index: 2;
+
+    width: 100%;
+    height: 100%;
+    position: relative;
   }
   .right-hand {
     grid-column-start: 3;
@@ -272,7 +305,7 @@ p {
     right: 0;
     top: 0;
     z-index: 0;
-    fill: #E3B256
+    // transform: translate(-100px, -100px);
 }
 
 
