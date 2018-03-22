@@ -27,9 +27,9 @@ export const MOVIES_DATA = {
             mainColor: '#7381f5',
             tracePaths: getOutTracePaths,
             fetchedActors: false,
-            rt: '99%',
-            metacritic: '84',
-            imdb: '7.7',
+            rt: 99,
+            metacritic: 84,
+            imdb: 7.7,
             notableFigures: [
                 {
                     name: 'Jordan Peele',
@@ -65,9 +65,9 @@ export const MOVIES_DATA = {
             mainColor: '#ff47bc',
             tracePaths: splitTracePaths,
             fetchedActors: false,
-            rt: '75%',
-            metacritic: '62',
-            imdb: '7.3',
+            rt: 75,
+            metacritic: 62,
+            imdb: 7.3,
             notableFigures: [
                 {
                     name: 'M. Night Shyamalan',
@@ -108,9 +108,9 @@ export const MOVIES_DATA = {
             contrastColor: '#e35656',
             mainColor: '#47d090',
             fetchedActors: false,
-            rt: '-',
-            metacritic: '-',
-            imdb: '-',
+            rt: 100,
+            metacritic: 100,
+            imdb: 10.0,
             notableFigures: [
                 {
                     name: 'David Gordon Green',
@@ -168,7 +168,6 @@ export const fetchActors = (actors) => {
     return Promise.all(
         actors.map((actor) => searchPerson('person', actor))
     ).then((actors) => {
-        console.log(actors)
         return actors;
     })
 }

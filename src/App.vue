@@ -20,6 +20,12 @@
           v-for="(value, key) in movieItems"></span>
       </section>
     </header>
+    <section v-if="isLoaded" class="right-hand">
+      <movie-details
+        :clearBlur="clearBlur"
+        :blurItems="blurItems"
+        :movieDetails="movieItems[selectedItemIndex]"/>
+    </section>
     <section v-if="isLoaded" class="left-hand">
       <character-image
         :filterMatrix="movieItems[selectedItemIndex]['filterMatrix']"
@@ -27,15 +33,28 @@
         :trianglePath="movieItems[selectedItemIndex]['trianglePath']"
         :tracePaths="movieItems[selectedItemIndex]['tracePaths']"/>
     </section>
-    <section v-if="isLoaded" class="right-hand">
-      <movie-details
-        :movieDetails="movieItems[selectedItemIndex]"/>
-    </section>
+    <svg id="bg-rect" width="65%" height="100%" preserveAspectRatio="xMinYMin slice" viewBox="0 0 954 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+        <desc>Created with Sketch.</desc>
+        <defs></defs>
+        <rect
+            id="Rectangle-4"
+            :fill="`${ (isLoaded) ? movieItems[selectedItemIndex].contrastColor : '#888' }`"
+            transform="translate(1126.625520, 681.625520) rotate(-20.000000) translate(-1612.625520, -681.625520) " x="733.62552" y="-197.37448" width="1758" height="1758"></rect>
+    </svg>
+    <svg height="0">
+        <defs>
+            <filter id="blur-filter" x="0" y="0">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+            </filter>
+        </defs>
+    </svg>
   </div>
 </template>
 
 <script>
   import { fetchBlumhouseMovies, fetchActors } from './js/helpers.js';
+  import TweenLite from './vendors/TweenLite.js';
   import CharacterImage from './CharacterImage.vue';
   import MovieDetails from './MovieDetails.vue'
 
@@ -46,7 +65,10 @@
         movieItems: [],
         isMovingLeft: false,
         isLoaded: false,
-        selectedItemIndex: 0
+        selectedItemIndex: 0,
+        selectedPersonId: '',
+        isBlurred: false,
+        blurIntensityTweened: 0.1
       }
     },
     components: {
@@ -56,10 +78,18 @@
     watch: {
       selectedItemIndex: function() {
         this.fetchActors()
+      },
+      isBlurred: function(isBlurred) {
+        TweenLite.to(
+            this.$data,
+            0.5,
+            { blurIntensityTweened: (isBlurred) ? 3 : 0 }
+        ).delay(1);
       }
     },
     methods: {
       handleArrowClick: function(e) {
+        if(this.isBlurred) return false;
         if(e.key == 'ArrowRight') {
           this.selectedItemIndex = Math.min((this.movieItems.length - 1), (this.selectedItemIndex + 1));
           this.isMovingLeft = false;
@@ -82,6 +112,22 @@
             this.movieItems[this.selectedItemIndex].fetchedActors = true;
           });
         }
+      },
+      clearBlur: function(selectedPersonId) {
+        const elements = document.querySelectorAll(`header, .left-hand, #bg-rect, .person, .title-container, .ratings-section, .movie-description-section`)
+        elements.forEach( (element) => {
+            if( element.id == selectedPersonId ) return false;
+            element.classList.toggle('blur');
+        })
+        this.isBlurred = false;
+      },
+      blurItems: function(selectedPersonId) {
+        const elements = document.querySelectorAll(`header, .left-hand, #bg-rect, .person, .title-container, .ratings-section, .movie-description-section`)
+        elements.forEach( (element) => {
+            if( element.id == selectedPersonId ) return false;
+            element.classList.toggle('blur');
+        })
+        this.isBlurred = true;
       }
     },
     mounted() {
@@ -103,6 +149,17 @@
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css?family=Anonymous+Pro:400,700|Open+Sans:400,600,700');
 
+@mixin hw-accelerate {
+    perspective: 1000;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+.blur {
+  @include hw-accelerate();
+  filter: url(#blur-filter);
+}
+
 body, #app {
   box-sizing: border-box;
   position: relative;
@@ -113,7 +170,7 @@ body {
   margin: 0;
   overflow: hidden;
   font-family: 'Open Sans', sans-serif;
-  color: #fff
+  color: #fff;
 }
 p {
   font-family: 'Anonymous Pro', monospace;
@@ -121,6 +178,7 @@ p {
 #app {
   height: 100%;
   display: grid;
+  grid-column-gap: 12px;
   grid-template-columns: 60px 1fr 1fr 60px;
   grid-template-rows: 60px auto;
 
@@ -131,6 +189,7 @@ p {
     grid-column-end: 5;
     grid-row-start: 1;
     grid-row-end: 1;
+    z-index: 2;
 
     display: flex;
     justify-content: space-between;
@@ -151,7 +210,7 @@ p {
     flex-direction: column;
     align-items: flex-end;
     position: relative;
-    z-index: 2;
+    z-index: 50;
 
     .nav-item {
       width: 40px;
@@ -176,12 +235,14 @@ p {
     grid-column-end: 3;
     grid-row-start: 2;
     grid-row-end: 3;
+    z-index: 2;
   }
   .right-hand {
     grid-column-start: 3;
     grid-column-end: 5;
     grid-row-start: 2;
     grid-row-end: 3;
+    z-index: 3;
   }
 
   // .component-fade-enter-active, .component-fade-leave-active {
@@ -204,6 +265,14 @@ p {
     display: flex;
     flex-direction: column;
   }
+}
+
+#bg-rect {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 0;
+    fill: #E3B256
 }
 
 

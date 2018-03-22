@@ -37,7 +37,6 @@
             </g>
         </g>
         <g
-
             :transform="`${ (transformData['traces']) ? transformData['traces'].transform : 'translate(0,0)'}`"
             id="traces">
             <path
@@ -46,8 +45,6 @@
                 class="cls-4"
                 :id="`trace-path-${key}`"
                 :d="value"/>
-            <!-- <path id="trace-path" class="cls-4" v-bind:d="tracePathsTweened" /> -->
-            <!-- <path id="trace-path" class="cls-4" d=""/> -->
         </g>
         </svg>
   </section>
@@ -158,14 +155,14 @@
         props: ['imageURL', 'trianglePath', 'tracePaths', 'filterMatrix'],
         mounted() {
             // Register an event listener when the Vue component is ready
-            window.addEventListener('mousemove', this.handleMouseMove)
+            // window.addEventListener('mousemove', this.handleMouseMove)
 
             this.transformData = this.generateTransformData(this.tracePaths)
         },
 
         beforeDestroy() {
             // Unregister the event listener before destroying this Vue instance
-            window.removeEventListener('mousemove', this.handleMouseMove)
+            // window.removeEventListener('mousemove', this.handleMouseMove)
         }
 
   }
@@ -174,7 +171,6 @@
 <style lang="scss">
     #character-image {
         position: relative;
-        z-index: 3;
     }
     .cls-1 {
         fill: none;

@@ -1,83 +1,69 @@
 <template>
   <section id="movie-details">
-      <section class="detais-container">
+      <section class="details-container">
         <section class="title-container">
             <h2>
                 <span
                 :key="key"
                 v-for="(value, key) in tweenedTitle">{{ value }}</span>
             </h2>
-            <p
-                v-if="complete"
-                :style="`color: ${ movieDetails.mainColor };`">{{ movieDetails['release_date'].slice(0,4) }}</p>
+            <transition
+                name="year-fade"
+                mode="out-in">
+                <p
+                    v-if="complete"
+                    :key="movieDetails.mdb_id"
+                    :style="`color: ${ movieDetails.mainColor };`">{{ movieDetails['release_date'].slice(0,4) }}</p>
+            </transition>
         </section>
-        <transition
-            name="component-fade"
-            mode="out-in">
-            <section v-bind:key="movieDetails['id']">
-                <section class="people-section">
-                    <section
-                        :key="key"
-                        class="person-container"
-                        v-for="(value, key) in movieDetails['notableFigures']">
-                        <section class="z-2">
-                            <section class="img-container">
-                                <img v-bind:src="`https://image.tmdb.org/t/p/w200/${ value.profile_path }`">
-                            </section>
-                            <h5>{{ value.role }}</h5>
-                            <h4>{{ value.name }}</h4>
-                        </section>
-                        <svg width="200px" height="240px" :aria-labelledby="value.id" viewBox="0 0 200 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-                            <title :id="value.id" >{{ value.name }}</title>
-                            <filter id="linear">
-                                <feColorMatrix
-                                    type="matrix"
-                                    :values="movieDetails.filterMatrix"/>
-                            </filter>
-                            <g :class="`char-bg-polygon ${ (movieDetails.name) == 'Get Out' ? 'get-out' : '' }`" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="3.3" >
-                                    <polygon id="Triangle" :points="value.background_shape"></polygon>
-                                </g>
-                            </g>
-                        </svg>
-                    </section>
+        <section v-bind:key="movieDetails['id']">
+            <section class="people-section">
+                <person
+                    v-for="(value, index) in movieDetails['notableFigures']"
+                    :blurItems="blurItems"
+                    :clearBlur="clearBlur"
+                    :key="index"
+                    :id="value.id"
+                    :biography="value.biography"
+                    :imageURL="value.profile_path"
+                    :role="value.role"
+                    :name="value.name"
+                    :bgFill="`${ movieDetails.mainColor }`"
+                    :bgShape="value.background_shape"
+                    />
+            </section>
+            <section class="ratings-section">
+                <section class="rating-box">
+                    <h4>IMDB</h4>
+                    <p>{{ tweenedRatings['imdb'] }}</p>
                 </section>
-                <section class="ratings-section">
-                    <section class="rating-box">
-                        <h4>IMDB</h4>
-                        <p>{{ movieDetails['imdb'] }}</p>
-                    </section>
-                    <section class="rating-box">
-                        <h4>RT</h4>
-                        <p>{{ movieDetails['rt'] }}</p>
-                    </section>
-                    <section class="rating-box">
-                        <h4>Metacritic</h4>
-                        <p>{{ movieDetails['metacritic'] }}</p>
-                    </section>
+                <section class="rating-box">
+                    <h4>RT</h4>
+                    <p>{{ tweenedRatings['rt'] }}%</p>
                 </section>
-                <section class="movie-details-section">
-                    <div class="detail-section">
-                        <p>{{ movieDetails['overview'] }}</p>
-                    </div>
+                <section class="rating-box">
+                    <h4>Metacritic</h4>
+                    <p>{{ tweenedRatings['metacritic'] }}</p>
                 </section>
             </section>
-        </transition>
+            <section class="movie-description-section">
+                <div class="detail-section">
+                    <transition
+                        name="movie-description-fade"
+                        mode="out-in">
+                        <p :key="movieDetails.mdb_id">{{ movieDetails['overview'] }}</p>
+                    </transition>
+                </div>
+            </section>
+        </section>
     </section>
-    <svg id="bg-rect" width="65%" height="100%" preserveAspectRatio="xMinYMin slice" viewBox="0 0 954 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-        <desc>Created with Sketch.</desc>
-        <defs></defs>
-        <rect
-            id="Rectangle-4"
-            :fill="movieDetails.contrastColor"
-            transform="translate(1126.625520, 681.625520) rotate(-20.000000) translate(-1612.625520, -681.625520) " x="733.62552" y="-197.37448" width="1758" height="1758"></rect>
-    </svg>
   </section>
 </template>
 
 <script>
+    import Person from './Person.vue';
+    import TweenLite from './vendors/TweenLite.js';
+
     const chars = ['$','%','#','@','&','=','*','/'];
     const charsTotal = chars.length;
     const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -87,19 +73,42 @@
             return {
                 tweenedTitle: '',
                 complete: false,
-                timeouts: []
+                timeouts: [],
+                tweenedRatings: {
+                    rt: this.movieDetails['rt'],
+                    imdb: this.movieDetails['imdb'],
+                    metacritic: this.movieDetails['metacritic']
+                }
             }
         },
+        components: {
+            Person
+        },
         watch: {
-            movieDetails: function() {
-                this.splitTitle()
+            movieDetails: function(newDetails) {
+
+                this.complete = false;
+                setTimeout(this.splitTitle, 250)
+                TweenLite.to(
+                    this.$data.tweenedRatings,
+                    1,
+                    {
+                        rt: newDetails['rt'],
+                        imdb: newDetails['imdb'],
+                        metacritic: newDetails['metacritic'],
+                        onUpdate: (update) => {
+                            this.$data.tweenedRatings.rt = this.$data.tweenedRatings.rt.toFixed(0);
+                            this.$data.tweenedRatings.imdb = this.$data.tweenedRatings.imdb.toFixed(1);
+                            this.$data.tweenedRatings.metacritic = this.$data.tweenedRatings.metacritic.toFixed(0);
+                        }
+                    }
+                )
             },
         },
         methods: {
             splitTitle: function() {
                 this.clearTimeouts()
                 this.tweenedTitle = this.movieDetails.name.split('')
-                this.complete = false;
                 let cnt = 0;
                 this.tweenedTitle.forEach((letter, index) => {
                     const initialLetter = letter;
@@ -134,9 +143,10 @@
                 this.timeouts = []
             }
         },
-        props: ['movieDetails'],
+        props: ['movieDetails', 'blurItems', 'clearBlur'],
         mounted() {
             this.splitTitle()
+            console.log('ow')
         },
         beforeDestroy() {
         }
@@ -145,19 +155,11 @@
 </script>
 
 <style lang="scss">
-    #bg-rect {
-        position: fixed;
-        right: 0;
-        top: 0;
-        z-index: 0;
-        fill: #E3B256
-    }
-.detais-container {
+.details-container {
     position: relative;
-    z-index: 3;
-    padding-right: 32px
+    z-index: 1;
+    padding-right: 32px;
 }
-
 .title-container {
     display: flex;
     justify-content: flex-start;
@@ -178,22 +180,23 @@
 
 .ratings-section {
     display: flex;
-}
 
-.rating-box {
-    flex-basis: 33.33333%;
-    text-align: center;
-    border: 1px solid #fff;
-    padding: 8px;
+    .rating-box {
+        flex-basis: 33.33333%;
+        text-align: center;
+        border: 1px solid #fff;
+        padding: 8px;
 
-    h4 {
-        margin: 0 0 8px 0;
-        font-weight: 600;
-        // text-transform: uppercase;
+        h4 {
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            // text-transform: uppercase;
+        }
+        p {
+            margin: 0;
+        }
     }
-    p {
-        margin: 0;
-    }
+
 }
 
 .people-section {
@@ -201,56 +204,36 @@
     justify-content: space-between;
     margin-bottom: 32px;
 }
-.person-container {
-    position: relative;
-    width: 200px;
-    height: 240px;
 
-    .img-container {
-        height: 160px;
-        width: 120px;
-        box-shadow: 0 0 12px rgba(30, 30, 30, 0.3);
-        margin: 20px 40px 0;
-        overflow: hidden;
 
-        img {
-            width: 120px;
-            height: auto;
-        }
-    }
-
-    h5 {
-        text-transform: uppercase;
-        opacity: 0.8;
-        margin:  8px 0 0;
-        padding: 0 20px 0 40px;
-    }
-
-    h4 {
-        margin: 0;
-        padding: 0 20px 0 40px;
-        font-weight: 600
-    }
-    .z-2 {
-        position: relative;
-        z-index: 2;
-    }
-    svg {
-        position: absolute;
-        top: 0;
-        z-index: 1;
-    }
-}
-
-.movie-details-section {
+.movie-description-section {
     padding: 0 36px;
 }
-.char-bg-polygon {
-    fill: #999999;
-    filter: url('#linear');
 
-    &.get-out {
-        fill: #6d6d6d;
-    }
+.movie-description-fade-enter-active {
+    transition: opacity 0.3s 0.3s ease-out;
 }
+
+.movie-description-fade-leave-active {
+    transition: opacity 0.3s ease-out;
+}
+.movie-description-fade-enter {
+    /* .component-fade-leave-active below version 2.1.8 */
+    opacity: 0;
+}
+
+.movie-description-fade-leave-to
+/* .component-fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+
+}
+
+.year-fade-enter-active, .year-fade-leave-active {
+    transition: opacity 3s ease-out;
+}
+.year-fade-enter, .year-fade-leave-to {
+    opacity: 0;
+
+}
+
 </style>
