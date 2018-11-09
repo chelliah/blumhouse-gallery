@@ -7,14 +7,9 @@
                 :key="key"
                 v-for="(value, key) in tweenedTitle">{{ value }}</span>
             </h2>
-            <transition
-                name="year-fade"
-                mode="out-in">
-                <p
-                    v-if="complete"
-                    v-bind:key="movieDetails.mdb_id"
-                    :style="`color: ${ movieDetails.mainColor };`">{{ movieDetails['release_date'].slice(0,4) }}</p>
-            </transition>
+            <p
+                :class="`year ${ complete ? '' : 'hidden'}`"
+                :style="`color: ${ movieDetails.mainColor };`">{{ movieDetails['release_date'].slice(0,4) }}</p>
         </section>
         <section>
             <section class="people-section">
@@ -128,7 +123,8 @@
                         this.tweenedTitle = Array.from(this.tweenedTitle)
                         ++cnt;
                         if ( cnt === this.tweenedTitle.length ) {
-                            this.complete = true;
+                            console.log(this.complete)
+                            this.complete = true
                         }
                     }, index*80+400);
 
@@ -169,12 +165,16 @@
         margin: 8px 16px 0 0;
         font-size: 40px;
     }
-
-    p {
+    .year {
         margin: 0 0 0 16px;
         font-size: 32px;
         align-self: baseline;
-        transition: color 0.3s;
+        transition: opacity 0.3s ease-out, color 0s 0.3s;
+        opacity: 1;
+
+        &.hidden {
+            opacity: 0;
+        }
     }
 }
 
@@ -224,14 +224,6 @@
 
 .movie-description-fade-leave-to
 /* .component-fade-leave-active below version 2.1.8 */ {
-    opacity: 0;
-
-}
-
-.year-fade-enter-active, .year-fade-leave-active {
-    transition: opacity 3s ease-out;
-}
-.year-fade-enter, .year-fade-leave-to {
     opacity: 0;
 
 }
