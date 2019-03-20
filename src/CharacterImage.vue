@@ -29,8 +29,8 @@
                             <image
                                 id="image-cropped"
                                 width="768" height="768"
-                                v-bind:key="imageURL"
-                                v-bind:xlink:href="imageURL"/>
+                                :key="imageURL"
+                                :xlink:href="`./${imageURL}`"/>
                         </transition>
                     </g>
                 </g>
