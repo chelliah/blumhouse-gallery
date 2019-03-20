@@ -30,7 +30,7 @@
                                 id="image-cropped"
                                 width="768" height="768"
                                 :key="imageURL"
-                                :xlink:href="`./${imageURL}`"/>
+                                :xlink:href="`.${imageURL}`"/>
                         </transition>
                     </g>
                 </g>
