@@ -93,9 +93,6 @@
                     document.removeEventListener('click', this.close, false);
                 }
             }
-        },
-        mounted() {
-            console.log('hi')
         }
   }
 </script>

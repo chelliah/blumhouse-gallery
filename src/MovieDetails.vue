@@ -123,7 +123,6 @@
                         this.tweenedTitle = Array.from(this.tweenedTitle)
                         ++cnt;
                         if ( cnt === this.tweenedTitle.length ) {
-                            console.log(this.complete)
                             this.complete = true
                         }
                     }, index*80+400);

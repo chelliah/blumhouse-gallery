@@ -30,7 +30,7 @@
                                 id="image-cropped"
                                 width="768" height="768"
                                 :key="imageURL"
-                                :xlink:href="`.${imageURL}`"/>
+                                :xlink:href="`${imageURL}`"/>
                         </transition>
                     </g>
                 </g>
@@ -164,7 +164,6 @@
         mounted() {
             // Register an event listener when the Vue component is ready
             // window.addEventListener('mousemove', this.handleMouseMove)
-            console.log('hm')
             this.transformData = this.generateTransformData(this.tracePaths)
         },
 

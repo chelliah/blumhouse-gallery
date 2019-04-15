@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "rm -rf ./dist && cross-env NODE_ENV=production webpack --progress --hide-modules",
+    "deploy": "serverless deploy -v"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +33,9 @@
   "dependencies": {
     "axios": "^0.18.0",
     "kute.js": "^1.6.5",
+    "serverless": "^1.40.0",
+    "serverless-hooks-plugin": "^1.1.0",
+    "serverless-s3-sync": "^1.7.3",
     "vue": "^2.5.13"
   }
 }

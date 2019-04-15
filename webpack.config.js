@@ -1,46 +1,12 @@
-// const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
-// const extractSass = new ExtractTextPlugin({
-//   filename: "[name].[contenthash].css",
-//   disable: process.env.NODE_ENV === "development"
-// });
-
-// module.exports = {
-//   entry: './src/js/app.js',
-//   output: {
-//     path: path.resolve(__dirname, 'dist'),
-//     filename: 'bundle.js'
-//   },
-//   module: {
-//     rules: [{
-//       test: /\.scss$/,
-//       use: extractSass.extract({
-//         use: [{
-//           loader: "css-loader"
-//         }, {
-//           loader: "sass-loader"
-//         }],
-//         // use style-loader in development
-//         fallback: "style-loader"
-//       })
-//     }],
-//   },
-//   plugins: [
-//     new HtmlWebpackPlugin({template: './src/index.html'}),
-//     new ExtractTextPlugin("styles.css")
-//   ],
-// };
-
 var path = require('path')
 var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    // publicPath: '',
     filename: 'build.js'
   },
   externals: {
@@ -132,6 +98,9 @@ if (process.env.NODE_ENV === 'production') {
       'process.env': {
         NODE_ENV: '"production"'
       }
+    }),
+    new HtmlWebpackPlugin({
+      template: 'index.html'
     }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,

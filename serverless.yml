@@ -1,0 +1,19 @@
+service:
+  name: blumhouse-animation
+plugins:
+  - serverless-hooks-plugin
+  - serverless-s3-sync
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-1
+
+custom:
+  hooks:
+    before:package:createDeploymentArtifacts:
+      - npm run build
+  s3Sync:
+    - bucketName: blumhouse-project
+      localDir: dist
+      acl: public-read
