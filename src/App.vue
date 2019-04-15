@@ -16,6 +16,7 @@
         <span
           :key="key"
           :class="`nav-item ${(selectedItemIndex == key) ? 'selected-item' : ''}`"
+          :title="movieItems[key].name"
           v-on:click="selectedItemIndex = key"
           v-for="(value, key) in movieItems"></span>
       </section>
@@ -245,9 +246,10 @@ p {
     .nav-item {
       width: 40px;
       height: 8px;
+      position: relative;
       margin-bottom: 4px;
       background: #fff;
-      opacity: 0.5;
+      opacity: 0.6;
       transform-origin: 100% 50%;
       transition: opacity 0.3s 0.15s cubic-bezier(0.645, 0.045, 0.355, .95),
               transform 0.3s cubic-bezier(0.645, 0.045, 0.355, .95);
@@ -256,6 +258,29 @@ p {
       &.selected-item {
         transform: scaleX(1.3);
         opacity: 1;
+      }
+
+      &::before {
+        content: attr(title);
+        position: absolute;
+        font-size: 12px;
+        width: 60px;
+        text-align: right;
+        padding-right: 4px;
+        right: 100%;
+        top: 50%;
+        opacity: 0;
+        margin: 0;
+
+        transform-origin: 100% 50%;
+        transform: translateX(20px) translateY(-50%) scale(0);
+        transition: opacity 0.3s cubic-bezier(0.645, 0.045, 0.355, .95),
+                transform 0.3s cubic-bezier(0.645, 0.045, 0.355, .95);
+      }
+
+      &:not(.selected-item):hover::before {
+        opacity: 1;
+        transform: translateX(0px) translateY(-50%) scale(1);
       }
     }
 

@@ -108,9 +108,9 @@ export const MOVIES_DATA = {
             contrastColor: 'rgb(277,86,86)',
             mainColor: '#47d090',
             fetchedActors: false,
-            rt: 100,
-            metacritic: 100,
-            imdb: 10.0,
+            rt: 80,
+            metacritic: 67,
+            imdb: 6.6,
             notableFigures: [
                 {
                     name: 'David Gordon Green',
