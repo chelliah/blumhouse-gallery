@@ -15,7 +15,7 @@
                 <rect class="cls-1" y="0" width="768" height="768"/>
             </clipPath>
         </defs>
-        <title>get-out-cropped</title>
+        <title>Movie Character Image</title>
         <g
             id="imageclip"
             :transform="`${ (transformData['imageclip']) ? transformData['imageclip'].transform : 'translate(0,0)'}`">
