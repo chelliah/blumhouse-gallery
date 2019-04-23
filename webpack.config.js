@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/main.js',
@@ -87,7 +88,13 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html'
+    }),
+    new Dotenv()
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -99,9 +106,9 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new HtmlWebpackPlugin({
-      template: 'index.html'
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: 'index.html'
+    // }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {

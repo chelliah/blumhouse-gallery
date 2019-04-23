@@ -1,15 +1,10 @@
-import css from '../styles/app.scss';
 import axios from 'axios';
-import getOut from '../assets/get-out.svg'
-import split from '../assets/split.svg'
-import halloween from '../assets/halloween.svg'
 import getOutPNG from '../assets/get-out.jpg'
 import splitPNG from '../assets/split.jpg'
 import halloweenPNG from '../assets/halloween.jpg'
 import { splitTracePaths, getOutTracePaths, halloweenTracePaths, compoundPaths } from './svgPaths.js';
-import Vue from 'vue';
 
-const generateMovieURL = (field, id) => `https://api.themoviedb.org/3/${field}/${id}?api_key=fb943e57f66775bee33b75e94c7f0310`
+const generateMovieURL = (field, id) => `https://api.themoviedb.org/3/${field}/${id}?api_key=${process.env.MOVIE_API_KEY}`
 
 export const MOVIES_DATA = {
     items: [
